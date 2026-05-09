@@ -17,7 +17,7 @@ class Users(models.Model):
 
     user_id = models.BigAutoField(primary_key=True, blank=False)
     full_name = models.CharField(max_length=55, blank=False)
-    Gender = models.ForeignKey(Genders, on_delete=models.CASCADE)
+    gender = models.ForeignKey(Genders, on_delete=models.CASCADE)
     birth_date = models.DateField(blank=False)
     address = models.CharField(max_length=55, blank=False)
     contact_number = models.CharField(max_length=255, blank=False)
