@@ -1,0 +1,121 @@
+<!-- TOP NAV -->
+<nav class="fixed top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-gray-200 shadow-sm">
+  <div class="px-6 py-3 flex items-center justify-between">
+
+    <!-- LEFT -->
+    <div class="flex items-center gap-4">
+
+      <button data-drawer-target="sidebar"
+              data-drawer-toggle="sidebar"
+              class="sm:hidden p-2 rounded-xl hover:bg-gray-100 active:scale-95 transition-all duration-200">
+
+        <svg class="w-6 h-6 text-gray-700"
+             fill="none"
+             stroke="currentColor"
+             viewBox="0 0 24 24">
+
+          <path stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+
+      </button>
+
+      <!-- PREMIUM TITLE -->
+      <h1 class="text-2xl font-extrabold tracking-tight text-blue-600 drop-shadow-sm hover:scale-[1.03] transition duration-300 cursor-default">
+        Gender System
+      </h1>
+
+    </div>
+
+    <!-- PROFILE -->
+    <div class="flex items-center gap-4">
+
+      <!-- FIXED PROFILE (IMAGE + NAME BELOW) -->
+      <div class="flex flex-col items-center">
+
+        <img src="https://i.pravatar.cc/40"
+             class="w-10 h-10 rounded-full border-2 border-blue-500 shadow-md
+                    hover:scale-110 hover:rotate-2 transition duration-300 cursor-pointer"
+             alt="profile">
+
+        <span class="text-xs font-medium text-gray-600 mt-1">
+          User
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+</nav>
+
+
+<!-- SIDEBAR -->
+<aside id="sidebar"
+  class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 bg-white border-r border-gray-200 shadow-xl">
+
+  <div class="h-full px-4 py-6">
+
+    <ul class="space-y-3">
+
+      <li>
+        <a href="/gender/list"
+           class="group flex items-center px-4 py-3 rounded-xl text-gray-700
+                  hover:bg-blue-600 hover:text-white
+                  hover:shadow-lg hover:translate-x-1
+                  transition-all duration-300 ease-out">
+
+          <span class="font-semibold tracking-wide">
+            Gender List
+          </span>
+
+        </a>
+      </li>
+
+      <li>
+        <a href="/gender/add"
+           class="group flex items-center px-4 py-3 rounded-xl text-gray-700
+                  hover:bg-blue-600 hover:text-white
+                  hover:shadow-lg hover:translate-x-1
+                  transition-all duration-300 ease-out">
+
+          <span class="font-semibold tracking-wide">
+            Add Gender
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="/user/list/"
+           class="group flex items-center px-4 py-3 rounded-xl text-gray-700
+                  hover:bg-blue-600 hover:text-white
+                  hover:shadow-lg hover:translate-x-1
+                  transition-all duration-300 ease-out">
+
+          <span class="font-semibold tracking-wide">
+            User List
+          </span>
+
+        </a>
+      </li>
+
+      <li>
+        <a href="/user/add/"
+           class="group flex items-center px-4 py-3 rounded-xl text-gray-700
+                  hover:bg-blue-600 hover:text-white
+                  hover:shadow-lg hover:translate-x-1
+                  transition-all duration-300 ease-out">
+
+          <span class="font-semibold tracking-wide">
+            Add User
+          </span>
+
+        </a>
+      </li>
+
+    </ul>
+
+  </div>
+</aside>

@@ -1,0 +1,30 @@
+{% load static %}
+
+{% if messages %}
+{% for message in messages %}
+
+<div id="toast-success"
+     class="fixed top-6 left-1/2 transform -translate-x-1/2 flex items-center gap-3 w-full max-w-sm p-4
+            z-50 text-gray-700 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-gray-200"
+     role="alert">
+
+    <div class="flex items-center justify-center w-10 h-10 text-green-600 bg-green-100 rounded-full shadow-sm">
+        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+        </svg>
+    </div>
+
+    <div class="text-sm font-medium text-gray-700">
+        {{ message }}
+    </div>
+
+    <button type="button"
+            class="ml-auto text-gray-400 hover:text-gray-900 transition"
+            data-dismiss-target="#toast-success"
+            aria-label="Close">
+        ✕
+    </button>
+</div>
+
+{% endfor %}
+{% endif %}

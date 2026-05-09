@@ -1,0 +1,56 @@
+{% extends "layout/base.html" %}
+
+{% block 'title' %}
+Genders List Page
+{% endblock 'title' %}
+
+{% block 'content' %}
+
+{% include "include/Sidebar.html" %}
+{% include "include/ToastMessage.html" %}
+
+<div class="p-6 sm:ml-64 mt-20 min-h-screen bg-gray-50">
+    <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-gray-100 w-full max-w-7xl mx-auto">
+        <div class="flex items-center justify-between px-6 py-3 border-b bg-blue-600">
+            <h2 class="text-white text-base font-semibold tracking-wide">
+                Gender Records
+            </h2>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+                <thead class="uppercase bg-gray-100 text-gray-500 text-xs">
+                    <tr>
+                        <th class="px-6 py-3">Gender</th>
+                        <th class="px-6 py-3 text-center">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-100 text-gray-700">
+                    {% for gender in genders %}
+                    <tr class="hover:bg-blue-50 transition duration-200">
+                        
+                        <td class="px-6 py-3 font-medium">
+                            {{ gender.gender }}
+                        </td>
+
+                        <td class="px-6 py-3 text-center">
+                            <a href="/gender/edit/{{gender.gender_id}}"
+                               class="inline-block px-2 py-1 text-[11px] font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 transition">
+                                Edit
+                            </a>
+                            
+                            <a href="/gender/delete/{{gender.gender_id }}"
+                               class="inline-block px-2 py-1 text-[11px] font-medium text-white bg-red-500 rounded-md hover:bg-red-600 transition ml-1">
+                                Delete
+                            </a>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock 'content' %}
