@@ -102,36 +102,33 @@ def user_list(request):
     return HttpResponse(f'Error occurred during  load  users: {e}')
   
 
-# FIXME:SIDEBAR ALL GOODS
+# FIXME: SIDEBAR CHECK
 def user_list(request):
     search = request.GET.get('search')
 
+    users = Users.objects.select_related('gender')
+
+
     if search:
-        users = Users.objects.filter(
+        users = users.filter(
             Q(full_name__icontains=search) |
             Q(gender__gender__icontains=search) |
-            Q(birth_date__icontains=search)|
-            Q(address__icontains=search)|
-            Q(contact_number__icontains=search)|
+            Q(birth_date__icontains=search) |
+            Q(address__icontains=search) |
+            Q(contact_number__icontains=search) |
             Q(email__icontains=search)
         )
-    else:
-        users = Users.objects.all()
 
-    return render(request, 'user/UserList.html', {
-        'users': users
-    })
+    users = users.order_by('-user_id')
 
-  #FIXME: PAGINATION
-def user_list(request):
-    users = Users.objects.all().order_by('-user_id')
-
+# FIXME: PARA SA PAGINATOR CHECK
     paginator = Paginator(users, 15)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'user/UserList.html', {
-        'page_obj': page_obj
+        'page_obj': page_obj,
+        'search': search
     })
   
 
@@ -149,8 +146,12 @@ def edit_user(request, userId):
             userObj.email = request.POST.get('email')
             userObj.username = request.POST.get('username')
 
-            userObj.save()
 
+# TODO:PARA MA CHANGE IMAGE
+            if request.FILES.get('profile_pic'):
+                userObj.profile_pic = request.FILES.get('profile_pic')
+
+            userObj.save()
             messages.success(request, 'User updated successfully!')
 
             data = {
@@ -169,7 +170,6 @@ def edit_user(request, userId):
             }
 
             return render(request, 'user/EditUser.html', data)
-
     except Exception as e:
         return HttpResponse(f'Error occurred during edit user: {e}')
 
@@ -192,7 +192,6 @@ def delete_user(request, userId):
             }
 
             return render(request, 'user/DeleteUser.html', data)
-
     except Exception as e:
         return HttpResponse(f'Error occurred during delete user: {e}')
 
@@ -214,12 +213,12 @@ def add_user(request):
       profile_pic = request.FILES.get('profile_pic')
 
 
-# FIXME: password validation ALL GOODS
+# FIXME: password validation CHECK
       if password != confirmPassword:
         messages.error(request, "Password does not match!")
         return redirect('/user/add')
       
-      
+ # FIXME: Para indi mag double ang username
       if Users.objects.filter(username=username).exists():
         messages.error(request, "Username already exists!")
         return redirect('/user/add')
