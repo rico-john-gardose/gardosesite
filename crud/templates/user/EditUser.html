@@ -1,0 +1,76 @@
+{% extends "layout/base.html" %}
+
+{% block 'title' %} Edit User {% endblock 'title' %}
+
+{% block 'content' %}
+{% include "include/sidebar.html" %}
+{% include "include/ToastMessage.html" %}
+<div class="min-h-screen bg-[#A6A6B3] flex justify-center items-start pt-24 pl-64">
+  <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-gray-100 w-full md:w-[65%] mx-auto">
+
+    <div class="px-6 py-4 border-b bg-[#3C3C45]">
+      <h1 class="text-white text-lg font-bold">Edit User </h1>
+    </div>
+
+    <div class="p-6">
+      <form action="/user/edit/{{user.user_id}}" method="post">
+        {% csrf_token %}
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div>
+              <label>Full Name</label>
+              <input type="text" name="full_name" value="{{user.full_name}}" class="w-full border px-3 py-2 rounded-lg">
+            </div>
+
+            <div>
+              <label>Gender</label>
+              <select name="gender" class="w-full border px-3 py-2 rounded-lg">
+
+                {% for gender in genders %}
+                <option value="{{gender.gender_id}}"
+                  {% if user.gender.gender_id == gender.gender_id %}selected{% endif %}>
+                  {{gender.gender}}
+                </option>
+                {% endfor %}
+
+              </select>
+            </div>
+
+            <div>
+              <label>Birth Date</label>
+              <input type="date" name="birth_date" value="{{user.birth_date|date:'Y-m-d'}}" class="w-full border px-3 py-2 rounded-lg">
+            </div>
+
+            <div>
+              <label>Address</label>
+              <input type="text" name="address" value="{{user.address}}" class="w-full border px-3 py-2 rounded-lg">
+            </div>
+
+            <div>
+              <label>Contact Number</label>
+              <input type="text" name="contact_number" value="{{user.contact_number}}" class="w-full border px-3 py-2 rounded-lg">
+            </div>
+
+            <div>
+              <label>Email</label>
+              <input type="text" name="email" value="{{user.email}}" class="w-full border px-3 py-2 rounded-lg">
+            </div>
+
+            <div>
+              <label>User Name</label>
+              <input type="text" name="username" value="{{user.username}}" class="w-full border px-3 py-2 rounded-lg">
+            </div>
+          </div>
+          
+          <div class="flex justify-end mt-4">
+            <a href="/user/list" class="px-4 py-2 mr-2 bg-blue-600 text-white rounded-lg">Back</a>
+            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg">Save User</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock 'content' %}

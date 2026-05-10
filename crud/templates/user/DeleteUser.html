@@ -1,0 +1,67 @@
+{% extends "layout/base.html" %}
+
+{% block 'title' %} Delete User {% endblock 'title' %}
+
+{% block 'content' %}
+{% include "include/sidebar.html" %}
+{% include "include/ToastMessage.html" %}
+<div class="min-h-screen bg-[#A6A6B3] flex justify-center items-start pt-24 pl-64">
+  <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-gray-100 w-full md:w-[65%] mx-auto">
+
+    <div class="px-6 py-4 border-b bg-[#3C3C45]">
+      <h1 class="text-white text-lg font-bold">Delete User</h1>
+    </div>
+
+    <div class="p-6">
+      <form action="/user/delete/{{user.user_id}}" method="post">
+        {% csrf_token %}
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div>
+              <label>Full Name</label>
+              <input type="text" value="{{user.full_name}}"readonly class="w-full border px-3 py-2 rounded-lg">
+            </div>
+
+            <div>
+              <label>Gender</label>
+              <input type="text" value="{{user.gender.gender}}" readonly class="w-full border px-3 py-2 rounded-lg">
+            </div>
+
+            <div>
+              <label>Birth Date</label>
+              <input type="text" value="{{user.birth_date}}" readonly class="w-full border px-3 py-2 rounded-lg">
+            </div>
+
+            <div>
+              <label>Address</label>
+              <input type="text" value="{{user.address}}" readonly class="w-full border px-3 py-2 rounded-lg">
+            </div>
+
+            <div>
+              <label>Contact Number</label>
+              <input type="text" value="{{user.contact_number}}" readonly class="w-full border px-3 py-2 rounded-lg">
+            </div>
+
+            <div>
+              <label>Email</label>
+              <input type="text" value="{{user.email}}" readonly class="w-full border px-3 py-2 rounded-lg">
+            </div>
+
+            <div>
+              <label>Username</label>
+              <input type="text" value="{{user.username}}" readonly class="w-full border px-3 py-2 rounded-lg">
+            </div>
+          </div>
+
+          <div class="flex justify-end mt-4">
+            <a href="/user/list" class="px-4 py-2 mr-2 bg-blue-600 text-white rounded-lg">Back</a>
+            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg">Delete User</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock 'content' %}

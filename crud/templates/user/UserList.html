@@ -9,55 +9,81 @@ User Lists
 {% include "include/Sidebar.html" %}
 {% include "include/ToastMessage.html" %}
 
-<div class="p-6 sm:ml-64 mt-20 min-h-screen bg-gray-50">
-    <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-gray-100 w-full max-w-7xl mx-auto">
-        <div class="flex items-center justify-between px-6 py-3 border-b bg-blue-600">
-            <h2 class="text-white text-base font-semibold tracking-wide">
-                Gender lists
-            </h2>
-        </div>
+<div class="min-h-screen bg-[#A6A6B3] p-0.5">
+    <div class="p-3 sm:ml-64 mt-16">
+        <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-gray-100 w-full max-w-7xl mx-auto">
+            <div class="flex items-center justify-between px-6 py-3 border-b bg-[#3C3C45]">
+                <h2 class="text-white text-base font-semibold tracking-wide">User List </h2>
+            </div>
+            <div class="p-4 border-b">
+                <form method="GET" class="max-w-md">
+                    <input type="search" name="search" value="{{ request.GET.search }}" placeholder="Search..."class="w-full px-3 py-2 border rounded-lg"/>
+                </form>
+            </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-xs text-left">
-                <thead class="uppercase bg-gray-100 text-gray-500 text-xs">
-                    <tr>
-                        <th class="px-6 py-3">Full Name</th>
-                        <th class="px-6 py-3">Gender</th>
-                        <th class="px-6 py-3">Birth Date</th>
-                        <th class="px-6 py-3">Address</th>
-                        <th class="px-6 py-3">Contact Number</th>
-                        <th class="px-6 py-3">Email</th>
-                        <th class="px-6 py-3">Action</th>
-                    </tr>
-                </thead>
+            <div class="overflow-x-auto">
+                <table class="w-full text-xs text-left">
 
-                <tbody class="divide-y divide-gray-100 text-gray-700">
-                    {% for user in users %}
-                    <tr class="hover:bg-blue-50 transition duration-200">
-                        
-                        <td class="px-6 py-3 font-medium"> {{ user.full_name}}</td>
-                        <td class="px-6 py-3 font-medium"> {{ user.gender.gender}}</td>
-                        <td class="px-6 py-3 font-medium"> {{ user.birth_date}}</td>
-                        <td class="px-6 py-3 font-medium"> {{ user.address}}</td>
-                        <td class="px-6 py-3 font-medium"> {{ user.contact_number}}</td>
-                        <td class="px-6 py-3 font-medium"> {{ user.email}}</td>
+                    <thead class="uppercase bg-gray-100 text-gray-500 text-xs">
+                        <tr>
+                            <th class="px-6 py-3">Profile</th>
+                            <th class="px-6 py-3">Full Name</th>
+                            <th class="px-6 py-3">Gender</th>
+                            <th class="px-6 py-3">Birth Date</th>
+                            <th class="px-6 py-3">Address</th>
+                            <th class="px-6 py-3">Contact Number</th>
+                            <th class="px-6 py-3">Email</th>
+                            <th class="px-6 py-3">Action</th>
+                        </tr>
+                    </thead>
 
-                        <td class="px-6 py-3 text-center">
-                            <a href=""
-                               class="inline-block px-2 py-1 text-[11px] font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 transition">
-                                Edit
-                            </a>
-                            
-                            <a href=""
-                               class="inline-block px-2 py-1 text-[11px] font-medium text-white bg-red-500 rounded-md hover:bg-red-600 transition ml-1">
-                                Delete
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    <tbody class="divide-y divide-gray-100 text-gray-700">
+
+                        {% for user in page_obj %}
+                        <tr class="hover:bg-blue-50 transition duration-200">
+                                <td class="px-6 py-3">
+                                    {% if user.profile_pic %}
+                                        <img src="{{ user.profile_pic.url }}" class="w-10 h-10 rounded-full object-cover">
+                                    {% else %}
+                                        <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
+                                    {% endif %}
+                                </td>
+
+                            <td class="px-6 py-3 font-medium">{{ user.full_name }}</td>
+                            <td class="px-6 py-3 font-medium">{{ user.gender.gender }}</td>
+                            <td class="px-6 py-3 font-medium">{{ user.birth_date }}</td>
+                            <td class="px-6 py-3 font-medium">{{ user.address }}</td>
+                            <td class="px-6 py-3 font-medium">{{ user.contact_number }}</td>
+                            <td class="px-6 py-3 font-medium">{{ user.email }}</td>
+
+                            <td class="px-6 py-3 text-center">
+                                <a href="/user/edit/{{ user.user_id }}"
+                                class="inline-block px-2 py-1 text-[11px] font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 transition">Edit </a>
+
+                                <a href="/user/delete/{{ user.user_id }}"
+                                class="inline-block px-2 py-1 text-[11px] font-medium text-white bg-red-500 rounded-md hover:bg-red-600 transition ml-1">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="flex justify-center items-center mt-2 gap-2 py-2 bg-[#3C3C45]">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}"class="px-2 py-1 bg-gray-300 rounded hover:bg-gray-400">Prev</a>
+                {% endif %}
+
+                <span class="text-white text-sm font-semibold">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}"class="px-2 py-1 bg-gray-300 rounded hover:bg-gray-400">Next</a>
+                {% endif %}
+
+            </div>
         </div>
     </div>
 </div>
+
 {% endblock 'content' %}

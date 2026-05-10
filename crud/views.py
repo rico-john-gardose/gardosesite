@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.contrib import messages
 from .models import Genders, Users
 from django.contrib.auth.hashers import make_password
+from django.db.models import Q
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -98,7 +100,101 @@ def user_list(request):
     return render(request, 'user/UserList.html', data)
   except Exception as e:
     return HttpResponse(f'Error occurred during  load  users: {e}')
+  
 
+# FIXME:SIDEBAR ALL GOODS
+def user_list(request):
+    search = request.GET.get('search')
+
+    if search:
+        users = Users.objects.filter(
+            Q(full_name__icontains=search) |
+            Q(gender__gender__icontains=search) |
+            Q(birth_date__icontains=search)|
+            Q(address__icontains=search)|
+            Q(contact_number__icontains=search)|
+            Q(email__icontains=search)
+        )
+    else:
+        users = Users.objects.all()
+
+    return render(request, 'user/UserList.html', {
+        'users': users
+    })
+
+  #FIXME: PAGINATION
+def user_list(request):
+    users = Users.objects.all().order_by('-user_id')
+
+    paginator = Paginator(users, 15)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'user/UserList.html', {
+        'page_obj': page_obj
+    })
+  
+
+# TODO: EDIT USER
+def edit_user(request, userId):
+    try:
+        if request.method == 'POST':
+            userObj = Users.objects.get(pk=userId)
+
+            userObj.full_name = request.POST.get('full_name')
+            userObj.gender = Genders.objects.get(pk=request.POST.get('gender'))
+            userObj.birth_date = request.POST.get('birth_date')
+            userObj.address = request.POST.get('address')
+            userObj.contact_number = request.POST.get('contact_number')
+            userObj.email = request.POST.get('email')
+            userObj.username = request.POST.get('username')
+
+            userObj.save()
+
+            messages.success(request, 'User updated successfully!')
+
+            data = {
+                'user': userObj,
+                'genders': Genders.objects.all()
+            }
+
+            return render(request, 'user/EditUser.html', data)
+
+        else:
+            userObj = Users.objects.get(pk=userId)
+
+            data = {
+                'user': userObj,
+                'genders': Genders.objects.all()
+            }
+
+            return render(request, 'user/EditUser.html', data)
+
+    except Exception as e:
+        return HttpResponse(f'Error occurred during edit user: {e}')
+
+
+# TODO: DELETE USER
+def delete_user(request, userId):
+    try:
+        if request.method == 'POST':
+            userObj = Users.objects.get(pk=userId)
+            userObj.delete()
+
+            messages.success(request, 'User deleted successfully!')
+            return redirect('/user/list')
+
+        else:
+            userObj = Users.objects.get(pk=userId)
+
+            data = {
+                'user': userObj
+            }
+
+            return render(request, 'user/DeleteUser.html', data)
+
+    except Exception as e:
+        return HttpResponse(f'Error occurred during delete user: {e}')
 
 
 
@@ -115,10 +211,17 @@ def add_user(request):
       username = request.POST.get('username')
       password = request.POST.get('password')
       confirmPassword = request.POST.get('confirm_password')
+      profile_pic = request.FILES.get('profile_pic')
+
 
 # FIXME: password validation ALL GOODS
       if password != confirmPassword:
         messages.error(request, "Password does not match!")
+        return redirect('/user/add')
+      
+      
+      if Users.objects.filter(username=username).exists():
+        messages.error(request, "Username already exists!")
         return redirect('/user/add')
 
       Users.objects.create(
@@ -129,7 +232,8 @@ def add_user(request):
         contact_number=contactNumber,
         email = email,
         username=username,
-        password=make_password(password)
+        password=make_password(password),
+        profile_pic=profile_pic
       ).save()
 
       messages.success(request, 'User added succesfully!')
@@ -145,3 +249,4 @@ def add_user(request):
     return render(request, 'user/AddUser.html', data)
   except Exception as e:
     return HttpResponse(f'Error occurred during add user: {e}')
+  
