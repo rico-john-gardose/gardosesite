@@ -81,7 +81,8 @@ def delete_gender(request, genderId):
       genderObj = Genders.objects.get(pk=genderId)
 
       data = {
-        'gender':genderObj
+        'gender':genderObj,
+        'genders': Genders.objects.all()
       }
       
       return render(request, 'gender/DeleteGender.html', data)
@@ -102,7 +103,7 @@ def user_list(request):
     return HttpResponse(f'Error occurred during  load  users: {e}')
   
 
-# FIXME: SIDEBAR CHECK
+# FIXME: SEARCH BAR CHECK
 def user_list(request):
     search = request.GET.get('search')
 
@@ -120,6 +121,7 @@ def user_list(request):
         )
 
     users = users.order_by('-user_id')
+
 
 # FIXME: PARA SA PAGINATOR CHECK
     paginator = Paginator(users, 15)
@@ -147,7 +149,7 @@ def edit_user(request, userId):
             userObj.username = request.POST.get('username')
 
 
-# TODO:PARA MA CHANGE IMAGE
+# TODO:PARA MA CHANGE IMAGE CHECK
             if request.FILES.get('profile_pic'):
                 userObj.profile_pic = request.FILES.get('profile_pic')
 
@@ -218,7 +220,7 @@ def add_user(request):
         messages.error(request, "Password does not match!")
         return redirect('/user/add')
       
- # FIXME: Para indi mag double ang username
+ # FIXME: Para indi mag double ang username CHECK
       if Users.objects.filter(username=username).exists():
         messages.error(request, "Username already exists!")
         return redirect('/user/add')
