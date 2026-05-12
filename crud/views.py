@@ -22,22 +22,28 @@ def gender_list(request):
     return HttpResponse(f'Error occurred during load gender: {e}')
   
 
-
 #TODO: ADD GENDER
 def add_gender(request):
-  try:
-    if request.method == 'POST':
-      gender = request.POST.get('gender')
-            
-      Genders.objects.create(gender=gender).save()
-      messages.success(request, 'Gender added succesfully!')
-      return redirect('/gender/list')
-    else:
-      return render(request, 'gender/AddGender.html')
-  except Exception as e:
-    return HttpResponse(f'Error occurred during add gender: {e}')
-  
+    try:
+        if request.method == 'POST':
+            gender = request.POST.get('gender')
 
+            # Validation
+            if not gender:
+                messages.error(request, 'Gender field is required!')
+                return render(request, 'gender/AddGender.html')
+
+            Genders.objects.create(gender=gender)
+            messages.success(request, 'Gender added successfully!')
+            return redirect('/gender/list')
+
+        else:
+            return render(request, 'gender/AddGender.html')
+
+    except Exception as e:
+        return HttpResponse(f'Error occurred during add gender: {e}')
+    
+    
 
 # TODO:EDIT GENDER
 def edit_gender(request, genderId):
@@ -137,8 +143,16 @@ def user_list(request):
 # TODO: EDIT USER
 def edit_user(request, userId):
     try:
+        userObj = Users.objects.get(pk=userId)
+
         if request.method == 'POST':
-            userObj = Users.objects.get(pk=userId)
+
+            username = request.POST.get('username')
+
+            # TODO: username exixt warning
+            if Users.objects.filter(username=username).exclude(pk=userId).exists():
+                messages.error(request, "Username already exists!")
+                return redirect(f'/user/edit/{userId}')
 
             userObj.full_name = request.POST.get('full_name')
             userObj.gender = Genders.objects.get(pk=request.POST.get('gender'))
@@ -146,35 +160,28 @@ def edit_user(request, userId):
             userObj.address = request.POST.get('address')
             userObj.contact_number = request.POST.get('contact_number')
             userObj.email = request.POST.get('email')
-            userObj.username = request.POST.get('username')
+            userObj.username = username
 
-
-# TODO:PARA MA CHANGE IMAGE CHECK
+            # TODO: PARA MA CHANGE IMAGE CHECK
             if request.FILES.get('profile_pic'):
                 userObj.profile_pic = request.FILES.get('profile_pic')
 
             userObj.save()
             messages.success(request, 'User updated successfully!')
 
-            data = {
-                'user': userObj,
-                'genders': Genders.objects.all()
-            }
-
-            return render(request, 'user/EditUser.html', data)
+            return redirect('/user/list')
 
         else:
-            userObj = Users.objects.get(pk=userId)
-
             data = {
                 'user': userObj,
                 'genders': Genders.objects.all()
             }
 
             return render(request, 'user/EditUser.html', data)
+
     except Exception as e:
         return HttpResponse(f'Error occurred during edit user: {e}')
-
+    
 
 # TODO: DELETE USER
 def delete_user(request, userId):
@@ -201,53 +208,88 @@ def delete_user(request, userId):
 
 # TODO:ADD USER
 def add_user(request):
-  try:
-    if request.method == 'POST':
-      fullName = request.POST.get('full_name')
-      gender = request.POST.get('gender')
-      birthDate = request.POST.get('birth_date')
-      address = request.POST.get('address')
-      contactNumber = request.POST.get('contact_number')
-      email = request.POST.get('email')
-      username = request.POST.get('username')
-      password = request.POST.get('password')
-      confirmPassword = request.POST.get('confirm_password')
-      profile_pic = request.FILES.get('profile_pic')
+    try:
+        if request.method == 'POST':
+
+            fullName = request.POST.get('full_name').strip()
+            gender = request.POST.get('gender')
+            birthDate = request.POST.get('birth_date')
+            address = request.POST.get('address').strip()
+            contactNumber = request.POST.get('contact_number').strip()
+            email = request.POST.get('email').strip()
+            username = request.POST.get('username').strip()
+            password = request.POST.get('password')
+            confirmPassword = request.POST.get('confirm_password')
+            profile_pic = request.FILES.get('profile_pic')
 
 
-# FIXME: password validation CHECK
-      if password != confirmPassword:
-        messages.error(request, "Password does not match!")
-        return redirect('/user/add')
-      
- # FIXME: Para indi mag double ang username CHECK
-      if Users.objects.filter(username=username).exists():
-        messages.error(request, "Username already exists!")
-        return redirect('/user/add')
+            # FIXME: Required fields validation
+            if not fullName:
+                messages.error(request, "Full name is required!")
+                return redirect('/user/add')
 
-      Users.objects.create(
-        full_name=fullName,
-        gender=Genders.objects.get(pk=gender),
-        birth_date=birthDate,
-        address=address,
-        contact_number=contactNumber,
-        email = email,
-        username=username,
-        password=make_password(password),
-        profile_pic=profile_pic
-      ).save()
+            if not gender:
+                messages.error(request, "Gender is required!")
+                return redirect('/user/add')
 
-      messages.success(request, 'User added succesfully!')
-      return redirect('/user/add')
+            if not birthDate:
+                messages.error(request, "Birth date is required!")
+                return redirect('/user/add')
+
+            if not address:
+                messages.error(request, "Address is required!")
+                return redirect('/user/add')
+
+            if not contactNumber:
+                messages.error(request, "Contact number is required!")
+                return redirect('/user/add')
+
+            if not email:
+                messages.error(request, "Email is required!")
+                return redirect('/user/add')
+
+            if not username:
+                messages.error(request, "Username is required!")
+                return redirect('/user/add')
+
+            if not password:
+                messages.error(request, "Password is required!")
+                return redirect('/user/add')
 
 
-    else:
-      genderObj = Genders.objects.all()
+            # FIXME: password validation CHECK
+            if password != confirmPassword:
+                messages.error(request, "Password does not match!")
+                return redirect('/user/add')
 
-      data = {
-        'genders':genderObj
-      }
-    return render(request, 'user/AddUser.html', data)
-  except Exception as e:
-    return HttpResponse(f'Error occurred during add user: {e}')
-  
+            # FIXME: Para indi mag double ang username CHECK
+            if Users.objects.filter(username=username).exists():
+                messages.error(request, "Username already exists!")
+                return redirect('/user/add')
+
+            Users.objects.create(
+                full_name=fullName,
+                gender=Genders.objects.get(pk=gender),
+                birth_date=birthDate,
+                address=address,
+                contact_number=contactNumber,
+                email=email,
+                username=username,
+                password=make_password(password),
+                profile_pic=profile_pic
+            )
+
+            messages.success(request, 'User added successfully!')
+            return redirect('/user/add')
+
+        else:
+            genderObj = Genders.objects.all()
+
+            data = {
+                'genders': genderObj
+            }
+
+        return render(request, 'user/AddUser.html', data)
+
+    except Exception as e:
+        return HttpResponse(f'Error occurred during add user: {e}')
